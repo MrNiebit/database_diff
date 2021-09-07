@@ -8,9 +8,15 @@ import asyncio
 import copy
 import sys
 import getopt
+import os
 
 loop = asyncio.get_event_loop()
 script_base = "diff_base"
+
+
+def mkdir_path(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
 
 
 async def find_data_info_by_name(data_list, name):
@@ -126,7 +132,6 @@ def main(argv):
         """.format(e, script_base))
         sys.exit()
     args = {k: v for k, v in opts}
-    print(args)
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             print(help_str)
@@ -159,6 +164,8 @@ def main(argv):
 
 
 if __name__ == '__main__':
+    mkdir_path('./config')
+    mkdir_path('./files')
     # obj = ExportObj(env='prod')
     # obj.export_to_sql_file()
     # -- 读取文件的形式 --
