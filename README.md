@@ -26,10 +26,31 @@
 导出线上环境固定结构格式的文件
 然后做对比，并生成需要执行的DB语句；
 
+# 使用教程
+
+1、导出文件
+  python diff_base.py -env dev
+    --env 使用的环境prod or dev
+    
+2、数据库比较的两种形式
+  python diff_base.py --type file 以文件的形式比较
+  python diff_base.py --type source 使用数据源的形式进行比较
+
+> 使用文件的形式比较前，请先导出文件
+
+当我们打包成对应平台（window、linux...）时，执行命令也会有所改变
+Linux: 给了文件的执行权限，可以使用 ./diff_base --t ...
+window: 使用 diff_base.exe --t ...
+mac: 同Linux
+
+# 打包教程
+
+
 # 目标
 
 - [x] 实现表的新增语句生成
 - [ ] 实现字段的增删改的语句生成
 - [ ] 实现索引的语句的生成
 - [ ] 支持多种类型数据库
-- [ ] 通过直接连接的方式进行对比
+- [x] 通过直接连接的方式进行对比
+
