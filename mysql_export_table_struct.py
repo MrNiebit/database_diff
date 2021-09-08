@@ -53,6 +53,8 @@ class ExportObj(object):
         field_list = []
         ddl_obj = DdlParse().parse(ddl, source_database=DdlParse.DATABASE.mysql)
         for col in ddl_obj.columns.values():
+            if col.name == 'USING':
+                continue
             col_info = {}
             col_info["name"] = col.name
             col_info["data_type"] = col.data_type

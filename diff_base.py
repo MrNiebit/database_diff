@@ -46,13 +46,14 @@ async def field_compare(dev_data, prod_data):
             continue
         # 找到对应的表信息后，进行字段对比
         for dev_field in dev['col_info_list']:
-            prod_field  = await find_data_info_by_name(table_info['col_info_list'], dev_field['name'])
+            prod_field = await find_data_info_by_name(table_info['col_info_list'], dev_field['name'])
             if prod_field is None:
                 # 如果字段不存在，就要 添加了
                 dml_sql_list.append(f'ALTER TABLE {dev["name"]} ADD {dev_field["name"]} {dev_field["data_type"]}'
                                     f'{"" if dev_field["length"] is None else "({})".format(dev_field["length"])}'
                                     f' {"NOT NULL" if dev_field["not_null"] else "NULL"} '
-                                    f' {"" if dev_field["comment"] is None else "COMMENT {}".format(dev_field["comment"]) + " "} ;')
+                                    f"""{"" if dev_field["comment"] is None else "COMMENT '%s'" % dev_field["comment"] + " "};
+                                    """ )
                 # 是否是主键
                 if dev_field['PK']:
                     dml_sql_list.append(f'\\n ALTER TABLE {dev["name"]} ADD CONSTRAINT {dev_field["name"]}_pk '
@@ -64,7 +65,8 @@ async def field_compare(dev_data, prod_data):
                 # 如果不同 以开发环境为准
                 tmp_sql += f' {dev_field["data_type"]}{ "" if dev_field["length"] is None else "({})".format(dev_field["length"])}' \
                            f' {"NOT NULL" if dev_field["not_null"] else "NULL"} ' \
-                           f'{"" if dev_field["comment"] is None else "COMMENT {}".format(dev_field["comment"]) + " "} ;'
+                           f"""{"" if dev_field["comment"] is None else "COMMENT '%s'" % dev_field["comment"] + " "};
+                                    """
                 dml_sql_list.append(tmp_sql)
 
     with open('./files/prod_need_execute_dml.sql', 'w', encoding='UTF-8') as f:
@@ -101,8 +103,8 @@ def get_data_from_file():
             dev_data = json.load(f)
         with open('./files/sql-prod.json', 'r', encoding='UTF-8') as f:
             prod_data = json.load(f)
-    except RuntimeError:
-        print('读取文件异常')
+    except RuntimeError as e:
+        print('读取文件异常, {}'.format(e))
     return dev_data, prod_data
 
 
@@ -124,7 +126,8 @@ def main(argv):
       {} --type source 使用数据源的形式进行比较
     '''.format(script_base, script_base, script_base)
     try:
-        opts, args = getopt.getopt(argv, "he:t", ['help', 'env=', 'type='])
+        # 这里 he:t: 对应 help env=  type= ;    ` : ` = ` = `
+        opts, args = getopt.getopt(argv, "he:t:", ['help', 'env=', 'type='])
     except getopt.GetoptError as e:
         print("""
     [Fatal] {}
@@ -185,9 +188,10 @@ password = 123
 database = test_a
 charset = utf8
     """
-    with open('./config/config.ini', 'w', encoding='UTF-8') as f:
-        f.write(config_str)
-    pass
+    config_path = './config/config.ini'
+    if not os.path.exists(config_path):
+        with open('./config/config.ini', 'w', encoding='UTF-8') as f:
+            f.write(config_str)
 
 
 if __name__ == '__main__':
