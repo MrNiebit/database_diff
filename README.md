@@ -28,11 +28,16 @@
 
 # 使用教程
 
-1、导出文件
+1、安装依赖库
+```bash
+pip install -r requirement.txt
+```
+
+2、导出文件
   python diff_base.py -env dev
     --env 使用的环境prod or dev
     
-2、数据库比较的两种形式
+3、数据库比较的两种形式
   python diff_base.py --type file 以文件的形式比较
   python diff_base.py --type source 使用数据源的形式进行比较
 
@@ -45,11 +50,22 @@ mac: 同Linux
 
 # 打包教程
 
+安装打包库
+```bash
+pip install pyinstaller
+```
+
+打包命令
+```bash
+pyinstaller -F ./diff_base.py
+```
+
+window、Linux、mac 均可以打包，打包之后就不再依赖Python环境
 
 # 目标
 
 - [x] 实现表的新增语句生成
-- [ ] 实现字段的增删改的语句生成
+- [x] 实现字段的增改的语句生成
 - [ ] 实现索引的语句的生成
 - [ ] 支持多种类型数据库
 - [x] 通过直接连接的方式进行对比
