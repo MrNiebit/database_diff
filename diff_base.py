@@ -153,7 +153,7 @@ def main(argv):
                 dev_data = ExportObj(env='dev').get_table_info_list()
                 prod_data = ExportObj(env='prod').get_table_info_list()
             if dev_data is None or prod_data is None:
-                print('dev数据 或者 prod数据 不能为空')
+                print('dev数据 或者 prod数据 不能为空; \n 请先导出dev和prod数据')
                 sys.exit()
             tasks = [
                 asyncio.ensure_future(field_compare(dev_data, prod_data)),
@@ -163,9 +163,35 @@ def main(argv):
             loop.close()
 
 
-if __name__ == '__main__':
+def generate_default_config():
     mkdir_path('./config')
     mkdir_path('./files')
+    config_str = """
+[dev]
+# 开发环境 db配置
+host = 127.0.0.1
+port = 3306
+username = root
+password = 123
+database = test
+charset = utf8
+
+[prod]
+# 生产环境 db配置
+host = 127.0.0.1
+port = 3306
+username = root
+password = 123
+database = test_a
+charset = utf8
+    """
+    with open('./config/config.ini', 'w', encoding='UTF-8') as f:
+        f.write(config_str)
+    pass
+
+
+if __name__ == '__main__':
+    generate_default_config()
     # obj = ExportObj(env='prod')
     # obj.export_to_sql_file()
     # -- 读取文件的形式 --
