@@ -34,7 +34,7 @@ pip install -r requirement.txt
 ```
 
 2、导出文件
-  python diff_base.py -env dev
+  python diff_base.py --env dev
     --env 使用的环境prod or dev
     
 3、数据库比较的两种形式
