@@ -1,0 +1,2 @@
+ddlparse==1.10.0
+PyMySQL==1.0.2

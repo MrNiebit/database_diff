@@ -30,7 +30,7 @@
 
 1、安装依赖库
 ```bash
-pip install -r requirement.txt
+pip install -r requirements.txt
 ```
 
 2、导出文件
